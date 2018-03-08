@@ -1,0 +1,78 @@
+--------------------------------------TEMA2 POO--------------------------------
+PREDESCU Maria 
+Grupa 324CB
+
+REZOLVAREA EXPRESIEI DE FILTRU (VISITOR PATTERN)
+	Pentru a rezolva expresia de filtru a fiecarui observator am folosit 
+in primul rand algoritmul Shunting Yard in urma caruia rezulta expresia 
+posfix a filtrului (clasa ShuntingYard). Adica in functie de precedenta 
+operatorilor si de paranteze rezulta o expresie fara paranteze in care fiecare
+operator este precedat de doi operanzi carora le corespunde. Apoi au fost 
+rezolvate partile din expresie doar pentru operatorii eq, ne, ge, gt, lt, le 
+pentru a rezulta o expresie ce contine doar true si false ca operanzi si || si
+&& ca operatori. Pentru a fi rezolvata cu ajutorul pattern-ului visitor expresia
+a fost pusa intr-un arbore (clasa ExpressionTree, metoda constructTree). Acest 
+lucru a fost realizat in clasa Stock, ce contine metoda filterStock ce returneaza
+true daca un feed trece de filtrul observatorului si false daca nu trece de filtru.
+Daca expresia de filtru a observatorului este nil atunci se va returna mereu true.
+	Pentru implementarea pattern-ului visitor am folosit doua interfete (Visitor
+si Visitable) ce contin metodele visit (pentru fiecare tip de nod), respectiv accept.
+Metodele visit au fost implmentate in clasa CalculatorVisitor (trei metode visitor:
+pentru OperandNode-returneaza valoarea operandului; OrNode-realizeaza sau logic
+intre fii nodului respectiv; AndNode-realizeaza si logic intre fii nodului respectiv).
+Metoda accept a fost implmentata in clasa Node si in clasele ce o extind pe aceasta
+(OperandNode, OrNode, AndNode).
+
+SINGLETON SI FACTORY PATTERN
+	Aceste pattern-uri au fost folosite impreuna pentru a crea operatori.
+Interfata OperatorFactory contine o metoda create ce este implementata in clasa 
+SingletonFactory si creeaza o noua instanta de tipul Operator. Clasa Operator
+contine metode de implementare pentru fiecare operator (eq, ne, ge, gt, le, lt).
+
+OBSERVER PATTERN
+	Pentru implmentarea acestui pattern am foslosit doua clase Observer si Subject,
+fiecare clasa avand metode specifice ce realizeaza legaturi intre cele doua clase.
+	Clasa Observer este destinata, desigur, observatorului care are urmatoarele 
+elemente:
+-un id
+-un filtru
+-o instanta subject ce realizeaza legatura cu subiectul
+-un treemap pentru stock-uri
+-un treemap ce retine valorile stock-ului de la ultima printare
+-un treemap ce retine numarul de schimbari al fieacarui stock de la ultima afisare
+De asemenea, contine si metoda update ce actualizeaza treemap-ul de stock-uri.
+	Clasa Subject contine metode de adaugare si notificare a observatorilor pe
+langa lista de observatori si treemap-ul pentru feed-uri. Astfel, metoda attach adauga
+un nou observator la lista de observatori. Metoda setState actualizeaza treemap-ul
+de feed-uri, si notifica observatorul. Metoda notifyObserver notifica observatorul
+in vederea unui nou feed.
+
+MAINCLASS
+	In clasa principala se realizeaza citirea de la tastatura a datelor si indeplinirea
+comenzilor date. Datele sunt citite pe linii. Fiecare linie este impartita in functie de 
+spatii intr-un vector de string-uri.
+	COMANDA CREATE_OBS - creeaza un nou observator
+	COMANDA DELETE_OBS - parcurge lista de observatori si cand intalneste observatorul
+cu id-ul corespunzator il elimina din lista.
+	COMANDA FEED - adauga un nou feed la treemap-ul de feed-uri si notifica observatorii
+cu privire la acest lucru prin intermediul metodei setState. De asemenea, se actualizeaza
+pentru fiecare utilizator in treemap-ul nr_of_changes numarul de schimabri al stock-ului.
+	COMANDA PRINT - afiseaza pentru observatorul cu id-ul dat stock-ul, fluctuatia 
+pretului de la ultima valoare afisata de observator si numarul de schimbari detectate de 
+observator pentru fiecare stock. Astfel, se parcurge lista de observatori pentru a gasi
+observatorul cu id-ul dat. Daca este prima afisare a observatorului se retine in treemap-ul
+print valoare de afisat si se printeaza, fluctuatia fiind 0, iar numarul de schimbari este 
+luat din treemap-ul nr_of_changes (daca un stock nu este gasit se va intoarce null,
+insemnand ca feed-ul a fost adaugat inainte de crearea observatorului contorul fiind astfel 0).
+Daca nu este prima afisare se va calcula fluctuatia dintre valoarea curenta din treemap-ul
+stock si cea de la ultima afisare din treemap-ul print. De asemenea, numarul de schimbari 
+va fi luat din treemap-ul nr_of_changes. Dupa printare contorul din treemap-ul nr_of_changes
+se seteaza la 0.
+
+
+
+
+
+
+
+
